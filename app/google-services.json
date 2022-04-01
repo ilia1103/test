@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "745000265082",
+    "project_id": "tonar-robots",
+    "storage_bucket": "tonar-robots.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745000265082:android:3714d8d5073ab4190922c3",
+        "android_client_info": {
+          "package_name": "com.example.tonar_robots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745000265082-eg44jckdndmpc3g08850at54e318eaf2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK17YY_hB-fOPuugqCjWzePBlYEW2gkSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745000265082-eg44jckdndmpc3g08850at54e318eaf2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
