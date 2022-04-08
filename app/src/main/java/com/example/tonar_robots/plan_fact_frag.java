@@ -98,7 +98,9 @@ public class plan_fact_frag extends Fragment {
         }
         TextView kolvoMinut = (TextView)view.findViewById(R.id.kpi_znach);
 
-        kolvoMinut.setText(String.valueOf(minutes));
+        double wtf  = minutes*8.2;
+        int rez = (int) Math.round(wtf);
+        kolvoMinut.setText(String.valueOf(rez)+" ₽");
 
 
 

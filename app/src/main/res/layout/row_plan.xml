@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="310dp"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,11 +18,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            app:cardBackgroundColor="#03A9F4"
-            app:cardCornerRadius="50dp"
+            android:layout_height="300dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#dfdede"
+            android:elevation="2dp"
+            app:cardBackgroundColor="#efeeee"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,6 +37,90 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="180dp"
+                    android:layout_height="65dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="170dp"
+                    android:layout_marginRight="10dp"
+                    android:elevation="2dp"
+                    app:cardBackgroundColor="#F5EEF5"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="2dp"
+                    app:cardMaxElevation="6dp"
+                    app:strokeColor="#1C1616"
+                    app:strokeWidth="1dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="60dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@null">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/kolvo"
+                            android:layout_width="match_parent"
+                            android:layout_height="86dp"
+                            android:background="#FFFFFF"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:text="2"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:background="@null"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/plus" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="5dp"
+                        android:background="@null"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/minus" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="false"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="190dp"
+                    android:layout_marginRight="120dp"
+                    android:text="Стоимость ₽"
+                    android:textColor="#0d0c14"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="137dp"
+                    android:layout_height="111dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="55dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/draw" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="137dp"
+                    android:layout_height="111dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="55dp"
+                    android:layout_marginRight="20dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/logo_tonar" />
+
                 <TextView
 
                     android:id="@+id/fio_birthday"
@@ -39,27 +128,27 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="false"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="45dp"
-                    android:background="#03A9F4"
+                    android:layout_marginTop="15dp"
+                    android:background="#efeeee"
                     android:fontFamily="sans-serif"
                     android:foregroundGravity="center"
                     android:gravity="center"
-                    android:textColor="#FFFFFF"
+                    android:text="фыыфвывф"
+                    android:textColor="#0d0c14"
                     android:textSize="18sp" />
 
                 <TextView
 
                     android:id="@+id/dolzhnost"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="120dp"
-                    android:background="#03A9F4"
+                    android:layout_marginTop="110dp"
                     android:fontFamily="sans-serif"
                     android:foregroundGravity="center"
                     android:gravity="center"
                     android:text="конец"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#0d0c14"
                     android:textSize="30sp" />
 
                 <TextView
@@ -67,24 +156,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="85dp"
+                    android:layout_marginTop="70dp"
                     android:fontFamily="sans-serif"
                     android:text="Начало "
-                    android:textColor="#FFFFFF"
+                    android:textColor="#0d0c14"
                     android:textSize="30sp" />
 
                 <Button
                     android:id="@+id/button2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:backgroundTint="#BADF16"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="#C8EEEE"
                     android:password="false"
                     android:text="Выполнено"
                     android:visibility="invisible" />
 
             </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

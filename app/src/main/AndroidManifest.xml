@@ -15,13 +15,23 @@
         android:theme="@style/Theme.Tonar_Robots"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".FileNotFound"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Tonar_Robots.NoActionBar"></activity>
-        <activity android:name=".Load_Content" />
-        <activity android:name=".God_mode" />
-        <activity android:name=".PinCode_main" />
-        <activity android:name=".Created" />
+            android:theme="@style/Theme.Tonar_Robots.NoActionBar" />
+        <activity android:name=".Load_Content"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".God_mode"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PinCode_main"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Created"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Plan" />
         <activity
             android:name=".Login"

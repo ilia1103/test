@@ -33,6 +33,9 @@ dependencies {
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'androidx.core:core:1.7.0'
+
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

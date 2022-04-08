@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="440dp"
-                android:text="Количество выработанных минут"
+                android:text="Стоимость выполненных заданий"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

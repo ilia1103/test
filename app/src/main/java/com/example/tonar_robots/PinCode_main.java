@@ -167,7 +167,8 @@ public class PinCode_main extends AppCompatActivity {
             StringBuilder stringBuilder = new StringBuilder();
 
 
-        } finally {
+        }
+        finally {
 
             if (fout != null) {
                 fout.close();
@@ -194,8 +195,19 @@ public class PinCode_main extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
 
+
+
+
             }
-                startActivity(intent);
+                if (fio_full.changed_massiv.size()<2){
+                    Intent intentNull = new Intent(PinCode_main.this, FileNotFound.class);
+
+                    startActivity(intentNull);
+                }
+                else{
+                    startActivity(intent);
+                }
+
         }
         }
 

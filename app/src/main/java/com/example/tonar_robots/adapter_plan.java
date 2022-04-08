@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -27,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -73,10 +76,10 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         if (position == 0) {
 
 
-            holder.itemView.setBackgroundColor(Color.GREEN);
+            //holder.itemView.setBackgroundColor(Color.GREEN);
         }
         else {
-            holder.itemView.setBackgroundColor(Color.RED);
+            //holder.itemView.setBackgroundColor(Color.RED);
         }
         String[] parts_file = fio_full.changed_massiv.get(position).split(";");
 
@@ -93,6 +96,92 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
 
         String[] finalParts_file = parts_file;
+
+
+
+        String[] sec1 =  parts_file[3].split(":");
+        String hours1 = sec1[0];
+        String minurtes1 = sec1[1];
+
+
+        Integer kolvoFromGraph = Integer.parseInt("10");
+        holder.kolvoText.setText(String.valueOf(kolvoFromGraph));
+
+
+
+        if (hours1.substring(0,1)=="0"){
+            hours1 = hours1.substring(1,2);
+
+        }
+        if (minurtes1.substring(0,1)=="0"){
+            minurtes1 = minurtes1.substring(1,2);
+
+        }
+        need_seconds_nach.set((Integer.parseInt(hours1) * 60 * 60 + Integer.parseInt(minurtes1) * 60) * 1000);
+        Log.d(LOG_TAG, "секунды нач :  "+  need_seconds_nach);
+
+        int need_seconds_end = 0;
+        String[] sec2 =  finalParts_file[4].split(":");
+        String hours2 = sec2[0];
+        String minurtes2 = sec2[1];
+
+        if (hours2.substring(0, 1).equals("0")){
+            hours2 = hours2.substring(1,2);
+
+        }
+        if (minurtes2.substring(0, 1).equals("0")){
+            minurtes2 = minurtes2.substring(1,2);
+
+        }
+        need_seconds_end = (Integer.parseInt(hours2)*60*60+Integer.parseInt(minurtes2)*60)*1000;
+        Log.d(LOG_TAG, "секунды конец :  "+  need_seconds_end);
+
+        int stoimostMin = (need_seconds_end - need_seconds_nach.get())/60000;
+        double stoimost = stoimostMin*8.2;
+        int final_cena = (int)Math.round(stoimost);
+
+
+        holder.stoimost.setText(String.valueOf(final_cena)+" ₽");
+
+
+        holder.plus.setOnClickListener(v -> {
+            String wtf = String.valueOf(holder.kolvoText.getText());
+            int wtfInt = Integer.parseInt(wtf);
+            if (wtfInt<kolvoFromGraph && wtfInt>0){
+
+                wtfInt = wtfInt + 1;
+                holder.kolvoText.setText(String.valueOf(wtfInt));
+            }
+            else {
+
+                Toast.makeText(context, "Недопустимое значение количества!", Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        });
+
+
+        holder.minus.setOnClickListener(v -> {
+            String wtf = String.valueOf(holder.kolvoText.getText());
+            int wtfInt = Integer.parseInt(wtf);
+            if (wtfInt<kolvoFromGraph+1 && wtfInt>1){
+
+                wtfInt = wtfInt - 1;
+                holder.kolvoText.setText(String.valueOf(wtfInt));
+            }
+            else {
+
+                Toast.makeText(context, "Недопустимое значение количества!", Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        });
+
+
+
+
         holder.vipoln.setOnClickListener(v -> {
 
             if (fio_full.Tabel.length()<2){
@@ -534,8 +623,10 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
     public class MyViewSub extends RecyclerView.ViewHolder {
 
-        TextView dolzhnost,fio,vozrast;
+        TextView dolzhnost,fio,vozrast,stoimost;
         Button vipoln;
+        ImageButton plus,minus;
+        TextInputEditText kolvoText;
 
 
 
@@ -543,13 +634,14 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
             super(itemView);
 
 
-
-
+            plus = itemView.findViewById(R.id.imageButton);
+            minus = itemView.findViewById(R.id.imageButton3);
+            kolvoText = itemView.findViewById(R.id.kolvo);
             vipoln = itemView.findViewById(R.id.button2);
 
 
 
-
+            stoimost = itemView.findViewById(R.id.textView7);
 
             dolzhnost = itemView.findViewById(R.id.dolzhnost);
             fio = itemView.findViewById(R.id.fio_birthday);
