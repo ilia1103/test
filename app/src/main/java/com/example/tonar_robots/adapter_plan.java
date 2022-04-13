@@ -3,6 +3,7 @@ package com.example.tonar_robots;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,11 +11,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,11 +40,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -67,7 +77,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull MyViewSub holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewSub holder, @SuppressLint("RecyclerView") int position) {
 
         final String[] iz_otpuska = new String[1];
         String LOG_TAG = Login.class.getSimpleName();
@@ -104,7 +114,9 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         String minurtes1 = sec1[1];
 
 
-        Integer kolvoFromGraph = Integer.parseInt("10");
+
+
+        Integer kolvoFromGraph = Integer.parseInt(parts_file[5]);
         holder.kolvoText.setText(String.valueOf(kolvoFromGraph));
 
 
@@ -144,18 +156,55 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         holder.stoimost.setText(String.valueOf(final_cena)+" ₽");
 
 
+
+        holder.draw.setOnClickListener(v -> {
+
+
+            String wat = String.valueOf(holder.fio.getText()).toUpperCase();
+            wat = wat.replace(" ","").replace("_","");
+
+
+
+            ///ЭТИ 2 СТРОЧКИ ВАЖНЫ
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+            StrictMode.setThreadPolicy(policy);
+
+
+            BufferedInputStream in = null;
+            FileOutputStream fout = null;
+
+
+            try{
+                saveUrl(Environment.getExternalStorageDirectory() + "/DCIM/"+wat+".SLDDRW", "http://10.11.1.238/slddrw/"+wat+".SLDDRW",wat);
+                Toast.makeText(context, "Подождите,файл загружается...." , Toast.LENGTH_SHORT).show();
+
+
+
+            }
+            catch(Exception e){
+                //Обработайте ошибку
+                //Toast.makeText(this, "НЕ СКАЧАЛ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, String.valueOf(e) , Toast.LENGTH_SHORT).show();
+            }
+
+
+            });
+
+
         holder.plus.setOnClickListener(v -> {
             String wtf = String.valueOf(holder.kolvoText.getText());
             int wtfInt = Integer.parseInt(wtf);
             if (wtfInt<kolvoFromGraph && wtfInt>0){
 
                 wtfInt = wtfInt + 1;
+                fio_full.kolvoVip = wtfInt;
+                Log.d(LOG_TAG, "сейчас количество :  "+fio_full.kolvoVip);
+
                 holder.kolvoText.setText(String.valueOf(wtfInt));
             }
             else {
-
                 Toast.makeText(context, "Недопустимое значение количества!", Toast.LENGTH_SHORT).show();
-
             }
 
 
@@ -168,6 +217,8 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
             if (wtfInt<kolvoFromGraph+1 && wtfInt>1){
 
                 wtfInt = wtfInt - 1;
+                fio_full.kolvoVip = wtfInt;
+                Log.d(LOG_TAG, "сейчас количество :  "+fio_full.kolvoVip);
                 holder.kolvoText.setText(String.valueOf(wtfInt));
             }
             else {
@@ -218,6 +269,8 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                                     if (fio_full.poisk){
                                                         int sch = 0;
                                                         while (sch<fio_full.changed_massiv.size()){
+                                                            //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
+
                                                             if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))){
                                                                 cifra = sch;
                                                                 Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИВЕ :  "+  cifra);
@@ -277,8 +330,30 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
                                                     }
 
-                                                    fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
-                                                    fio_full.changed_massiv.remove(cifra);
+
+                                                    //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
+
+                                                    Log.d(LOG_TAG, "прошел в неравенство количества :  "+fio_full.kolvoVip+"  - "+finalParts_file[5]);
+                                                    if (fio_full.kolvoVip!=Integer.parseInt(finalParts_file[5])&&fio_full.kolvoVip!=0){
+                                                        int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip ;
+                                                        String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
+                                                        String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
+
+                                                        fio_full.sdelano.add(newStr+";"+fio_full.Tabel);
+                                                        fio_full.changed_massiv.set(cifra,newStrMassiv) ;
+                                                        fio_full.kolvoVip = 0;
+
+
+                                                    }
+                                                    else{
+                                                        fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
+                                                        //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
+
+                                                        fio_full.changed_massiv.remove(cifra);
+                                                    }
+
+
+
 
                                                     FirebaseStorage storage = FirebaseStorage.getInstance();
                                                     StorageReference storageReference = storage.getReference();
@@ -313,44 +388,9 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                                         }
                                                     });
 
-                                                    String myURL = "http://1csrv05/Phone/ru/hs/tfj/Call";
-                                                    String params = "Authorization:Basic X9Ch0L7RhNGC0KE6MDEyMw==";
-                                                    byte[] data = null;
-                                                    InputStream is = null;
-
-                                                    try {
-                                                        URL url = new URL(myURL);
-                                                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                                                        conn.setRequestMethod("POST");
-                                                        conn.setDoOutput(true);
-                                                        conn.setDoInput(true);
-
-                                                        conn.setRequestProperty("Content-Length", "" + Integer.toString(params.getBytes().length));
-                                                        OutputStream os = conn.getOutputStream();
-                                                        data = params.getBytes("UTF-8");
-                                                        os.write(data);
 
 
-                                                        conn.connect();
-                                                        int responseCode= conn.getResponseCode();
 
-                                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                                        is = conn.getInputStream();
-
-                                                        byte[] buffer = new byte[8192]; // Такого вот размера буфер
-                                                        // Далее, например, вот так читаем ответ
-                                                        int bytesRead;
-                                                        while ((bytesRead = is.read(buffer)) != -1) {
-                                                            baos.write(buffer, 0, bytesRead);
-                                                        }
-                                                        data = baos.toByteArray();
-                                                    } catch (Exception e) {
-                                                    } finally {
-                                                        try {
-                                                            if (is != null)
-                                                                is.close();
-                                                        } catch (Exception ex) {}
-                                                    }
 
 
 
@@ -405,6 +445,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                         if (fio_full.poisk){
                                             int sch = 0;
                                             while (sch<fio_full.changed_massiv.size()){
+                                                //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
                                                 if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))){
                                                     cifra = sch;
                                                     Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИВЕ :  "+  cifra);
@@ -464,8 +505,26 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
                                         }
 
-                                        fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
-                                        fio_full.changed_massiv.remove(cifra);
+                                        Log.d(LOG_TAG, "прошел в неравенство количества :  "+fio_full.kolvoVip+"  - "+finalParts_file[5]);
+                                        if (fio_full.kolvoVip!=Integer.parseInt(finalParts_file[5])&&fio_full.kolvoVip!=0){
+                                            int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip ;
+                                            String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
+                                            String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
+
+                                            fio_full.sdelano.add(newStr+";"+fio_full.Tabel);
+                                            fio_full.changed_massiv.set(cifra,newStrMassiv) ;
+                                            fio_full.kolvoVip = 0;
+
+
+                                        }
+                                        else{
+                                            fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
+                                            //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
+
+                                            fio_full.changed_massiv.remove(cifra);
+                                        }
+
+
 
                                         FirebaseStorage storage = FirebaseStorage.getInstance();
                                         StorageReference storageReference = storage.getReference();
@@ -626,6 +685,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         TextView dolzhnost,fio,vozrast,stoimost;
         Button vipoln;
         ImageButton plus,minus;
+        ImageView draw;
         TextInputEditText kolvoText;
 
 
@@ -640,7 +700,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
             vipoln = itemView.findViewById(R.id.button2);
 
 
-
+            draw = itemView.findViewById(R.id.imageView4);
             stoimost = itemView.findViewById(R.id.textView7);
 
             dolzhnost = itemView.findViewById(R.id.dolzhnost);
@@ -651,4 +711,71 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
         }
     }
+    public void saveUrl(final String filename, final String urlString,final String name)
+            throws MalformedURLException, IOException {
+        BufferedInputStream in = null;
+        FileOutputStream fout = null;
+
+
+        try {
+            in = new BufferedInputStream(new URL(urlString).openStream());
+            fout = new FileOutputStream(filename);
+
+            final byte data[] = new byte[1024];
+            int count;
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
+            }
+        }
+        catch (IOException e) {
+            Toast.makeText(context, "Файл не найден в хранилище!" , Toast.LENGTH_SHORT).show();
+
+        }
+        finally {
+
+            if (in != null) {
+                in.close();
+
+
+                String localUri = "/storage/emulated/0/DCIM/"+name+".SLDDRW"; //тут уже как хотите так и формируйте путь, хоть через Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + имя файла
+
+                // url = file path or whatever suitable URL you want.
+
+                File file = new File(localUri);
+                Uri contentUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+                Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
+
+                openFileIntent.setDataAndTypeAndNormalize(contentUri,  getMimeType(localUri));
+                openFileIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(openFileIntent);
+
+
+
+                //String path = "/storage/emulated/0/DCIM/ПТ12-3001043.SLDDRW";
+                //File file = new File(path);
+                //pdfOpenintent.setDataAndType(photoURI, "application/slddrw");
+                //pdfOpenintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+
+
+
+
+            }
+            if (fout != null) {
+                fout.close();
+
+            }
+        }
+    }
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        Log.d("moe", "ТИП :  "+  type);
+
+        return type;
+    }
 }
+

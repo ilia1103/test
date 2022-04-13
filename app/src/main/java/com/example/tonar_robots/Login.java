@@ -180,6 +180,11 @@ class fio_full {
 
     public static ArrayList<String> sdelano = new ArrayList<String>();
 
+
+    public static Integer kolvoVip = 0;
+
+    public static String ssilkaFile = "";
+
     public static Integer promejutok_need = 1000;
     public static String brigada = "";
     public static String Tabel = "1";

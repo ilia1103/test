@@ -8,14 +8,14 @@
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_god_mode.xml" value="0.5505208333333333" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_load__content.xml" value="0.5505208333333333" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_login.xml" value="0.5505208333333333" />
-        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_main.xml" value="0.5505208333333333" />
+        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_pin_code_main.xml" value="0.5505208333333333" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/activity_plan.xml" value="0.5541666666666667" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/fragment_main.xml" value="0.5505208333333333" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/plan_fact.xml" value="0.5541666666666667" />
-        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/row_plan.xml" value="0.5" />
+        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/row_plan.xml" value="0.33" />
         <entry key="..\:/Tonar_Robots/app/src/main/res/layout/row_planTest.xml" value="0.67" />
-        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/zadanie_frag.xml" value="0.5505208333333333" />
+        <entry key="..\:/Tonar_Robots/app/src/main/res/layout/zadanie_frag.xml" value="0.33" />
       </map>
     </option>
   </component>

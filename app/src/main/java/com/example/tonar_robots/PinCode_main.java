@@ -83,6 +83,8 @@ public class PinCode_main extends AppCompatActivity {
                         saveUrl(getExternalFilesDir(Environment.DIRECTORY_DCIM) +"/"+brigada+".txt", "http://10.0.1.253/plan_proizvodstva/"+brigada+".txt");
                         Log.d(TAG, "Pin ссылка: " + "http://10.0.1.253/plan_proizvodstva/"+brigada+".txt");
 
+                        fio_full.ssilkaFile = "http://10.0.1.253/plan_proizvodstva/"+brigada+".txt";
+
 
                     }
                     catch(Exception e){

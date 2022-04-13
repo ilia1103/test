@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:tabIndicatorColor="#711616"
+            app:tabIndicatorColor="#918D8D"
             app:tabTextColor="#FFFFFF" />
 
         <Button

@@ -169,7 +169,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="#C8EEEE"
+                    android:backgroundTint="#144C4C"
                     android:password="false"
                     android:text="Выполнено"
                     android:visibility="invisible" />

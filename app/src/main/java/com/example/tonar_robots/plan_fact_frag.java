@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class plan_fact_frag extends Fragment {
@@ -46,7 +47,8 @@ public class plan_fact_frag extends Fragment {
 
 
             String[] parts_file = fio_full.sdelano.get(sch).split(";");
-            if (myTabel.equals(parts_file[5])){
+            Log.d(LOG_TAG, "секунды конец :  "+ Arrays.toString(parts_file));
+            if (myTabel.equals(parts_file[6])){
                 AtomicInteger need_seconds_nach = new AtomicInteger();
 
                 String[] sec1 =  parts_file[3].split(":");

@@ -85,9 +85,6 @@ public class plan_frag extends Fragment {
 
         while (sch<fio_full.changed_massiv.size()){
 
-
-
-
             String[] stroka =  fio_full.changed_massiv.get(sch).split(";");
             if (!podr.contains(stroka[1])){
                 podr.add(stroka[1]);
@@ -159,14 +156,7 @@ public class plan_frag extends Fragment {
 
 
 
-    public void OnGod(View view) {
 
-        Intent intent = new Intent(view.getContext(), God_mode.class);
-
-        startActivity(intent);
-
-
-    }
 
 
 
