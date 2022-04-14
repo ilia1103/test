@@ -146,14 +146,30 @@ public class God_mode extends AppCompatActivity {
 
 
                             String lineParts [] = line.split(";");
-                            mainStr = newStrParts[0]+";"+newStrParts[1]+";"+newStrParts[2]+";"+newStrParts[3]+";"+newStrParts[4]+lineParts[5];
+                            mainStr = lineParts[0]+";"+lineParts[1]+";"+lineParts[2]+";"+lineParts[3]+";"+lineParts[4]+";"+lineParts[5];
                             int kolvoFile = Integer.parseInt(lineParts[5]);
                              newStrLine = lineParts[0]+";"+lineParts[1]+";"+lineParts[2]+";"+lineParts[3]+";"+lineParts[4];
                             if (newStrLine.equals(newStr)&&kolvoFile>kolvoSdelano){
-                                int ostatok = kolvoFile - kolvoSdelano;
-                                newStrLine = newStrLine+";"+String.valueOf(ostatok);
 
-                                manyOtm = manyOtm + 1;
+                                int ostatok = 0;
+                                if (manyOtm>0){
+
+                                    String many [] = newStrLine.split(";");
+                                    String mainStrKolvo = many[0]+";"+many[1]+";"+many[2]+";"+many[3]+";"+many[4];
+                                    ostatok = kolvoFile - kolvoSdelano - manyOtm;
+                                    newStrLine = mainStrKolvo+";"+String.valueOf(ostatok);
+
+                                    Log.d(LOG_TAG, "пишет или не пишет то :  "+newStrLine+";"+String.valueOf(ostatok));
+                                }
+                                else {
+
+                                    ostatok = kolvoFile - kolvoSdelano;
+                                    newStrLine = newStrLine+";"+String.valueOf(ostatok);
+
+                                }
+
+                                manyOtm = manyOtm + kolvoSdelano;
+
                             }
                             else{
                                 newStrLine = line;
@@ -161,6 +177,7 @@ public class God_mode extends AppCompatActivity {
 
                             sch = sch + 1;
                         }
+                        manyOtm = 0;
                         if (newStrLine.equals("")){
                             newStrLine = line;
                         }
@@ -171,9 +188,10 @@ public class God_mode extends AppCompatActivity {
                             String myStr = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3]+";"+parts[4]+";"+parts[5];
                            // Log.d(LOG_TAG, "такие строю из сделано :  "+myStr);
 
-
+                            Log.d(LOG_TAG, "строка главнаяСтрока :  " + mainStr);
+                            Log.d(LOG_TAG, "строка изСделано :  " + myStr);
                             if (myStr.equals(mainStr)){
-                                Log.d(LOG_TAG, "такие строю из сделано :  "+newStrLine);
+
                                 vipFull = true;
                             }
 
@@ -185,8 +203,16 @@ public class God_mode extends AppCompatActivity {
                             Log.d(LOG_TAG, "уже был в сделано :  ");
                         }
                         else{
-                            fio_full.str_file.add(line);
-                            fio_full.changed_massiv.add(newStrLine);
+                            String partsZero [] = newStrLine.split(";");
+
+                            if (Integer.parseInt(partsZero[5])<1){
+                                Log.d(LOG_TAG, "по отметкам уже выполнен(несколько) :  ");
+                            }
+                            else{
+                                fio_full.str_file.add(line);
+                                fio_full.changed_massiv.add(newStrLine);
+                            }
+
                         }
 
                         // считываем остальные строки в цикле
