@@ -201,7 +201,7 @@ public class PinCode_main extends AppCompatActivity {
 
 
             }
-                if (fio_full.changed_massiv.size()<2){
+                if (fio_full.changed_massiv.size()<1){
                     Intent intentNull = new Intent(PinCode_main.this, FileNotFound.class);
 
                     startActivity(intentNull);

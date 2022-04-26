@@ -87,9 +87,6 @@ public class Login extends AppCompatActivity {
 
 
 
-
-
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
 

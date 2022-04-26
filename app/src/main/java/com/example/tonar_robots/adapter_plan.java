@@ -115,17 +115,15 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
 
 
-
         Integer kolvoFromGraph = Integer.parseInt(parts_file[5]);
         holder.kolvoText.setText(String.valueOf(kolvoFromGraph));
 
 
-
-        if (hours1.substring(0,1)=="0"){
+        if (hours1.charAt(0) == '0'){
             hours1 = hours1.substring(1,2);
 
         }
-        if (minurtes1.substring(0,1)=="0"){
+        if (minurtes1.charAt(0) == '0'){
             minurtes1 = minurtes1.substring(1,2);
 
         }
@@ -137,11 +135,11 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         String hours2 = sec2[0];
         String minurtes2 = sec2[1];
 
-        if (hours2.substring(0, 1).equals("0")){
+        if (hours2.charAt(0) == '0'){
             hours2 = hours2.substring(1,2);
 
         }
-        if (minurtes2.substring(0, 1).equals("0")){
+        if (minurtes2.charAt(0) == '0'){
             minurtes2 = minurtes2.substring(1,2);
 
         }
@@ -149,9 +147,16 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
         Log.d(LOG_TAG, "секунды конец :  "+  need_seconds_end);
 
         int stoimostMin = (need_seconds_end - need_seconds_nach.get())/60000;
-        double stoimost = stoimostMin*8.2;
-        int final_cena = (int)Math.round(stoimost);
+        // Здесь получили минуты из текстовика и пересчитали по коэф
 
+
+
+        Integer kolvoMin = Integer.parseInt(parts_file[2]);
+        double stoimost = kolvoMin*8.2;
+        int final_cena = (int)Math.round(stoimost);
+        int cenaForOne = final_cena/kolvoFromGraph;
+
+        holder.stoimost1.setText(String.valueOf(cenaForOne));
 
         holder.stoimost.setText(String.valueOf(final_cena)+" ₽");
 
@@ -200,8 +205,17 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                 wtfInt = wtfInt + 1;
                 fio_full.kolvoVip = wtfInt;
                 Log.d(LOG_TAG, "сейчас количество :  "+fio_full.kolvoVip);
-
                 holder.kolvoText.setText(String.valueOf(wtfInt));
+
+                String[] cenaAll = String.valueOf(holder.stoimost.getText()).split(" ");
+                int cena = Integer.parseInt(cenaAll[0]);
+                int cenaNeed = cena + Integer.parseInt(String.valueOf(holder.stoimost1.getText()));
+                holder.stoimost.setText(String.valueOf(cenaNeed));
+
+
+
+
+
             }
             else {
                 Toast.makeText(context, "Недопустимое значение количества!", Toast.LENGTH_SHORT).show();
@@ -220,6 +234,12 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                 fio_full.kolvoVip = wtfInt;
                 Log.d(LOG_TAG, "сейчас количество :  "+fio_full.kolvoVip);
                 holder.kolvoText.setText(String.valueOf(wtfInt));
+
+                String[] cenaAll = String.valueOf(holder.stoimost.getText()).split(" ");
+                int cena = Integer.parseInt(cenaAll[0]);
+                int cenaNeed = cena - Integer.parseInt(String.valueOf(holder.stoimost1.getText()));
+                holder.stoimost.setText(String.valueOf(cenaNeed));
+
             }
             else {
 
@@ -301,11 +321,11 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                                     String hours2 = sec2[0];
                                                     String minurtes2 = sec2[1];
 
-                                                    if (hours2.substring(0, 1).equals("0")){
+                                                    if (hours2.charAt(0) == '0'){
                                                         hours2 = hours2.substring(1,2);
 
                                                     }
-                                                    if (minurtes2.substring(0, 1).equals("0")){
+                                                    if (minurtes2.charAt(0) == '0'){
                                                         minurtes2 = minurtes2.substring(1,2);
 
                                                     }
@@ -448,7 +468,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                                 //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
                                                 if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))){
                                                     cifra = sch;
-                                                    Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИВЕ :  "+  cifra);
+                                                    Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИЕ :  "+  cifra);
                                                 }
                                                 sch = sch + 1;
                                             }
@@ -682,7 +702,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
     public class MyViewSub extends RecyclerView.ViewHolder {
 
-        TextView dolzhnost,fio,vozrast,stoimost;
+        TextView dolzhnost,fio,vozrast,stoimost,stoimost1;
         Button vipoln;
         ImageButton plus,minus;
         ImageView draw;
@@ -702,7 +722,7 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
             draw = itemView.findViewById(R.id.imageView4);
             stoimost = itemView.findViewById(R.id.textView7);
-
+            stoimost1 = itemView.findViewById(R.id.stoimost1);
             dolzhnost = itemView.findViewById(R.id.dolzhnost);
             fio = itemView.findViewById(R.id.fio_birthday);
             vozrast = itemView.findViewById(R.id.vozrast);

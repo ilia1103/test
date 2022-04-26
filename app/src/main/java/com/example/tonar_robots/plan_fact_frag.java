@@ -51,6 +51,8 @@ public class plan_fact_frag extends Fragment {
             if (myTabel.equals(parts_file[6])){
                 AtomicInteger need_seconds_nach = new AtomicInteger();
 
+
+                Integer kolvoMin = Integer.parseInt(parts_file[2]);
                 String[] sec1 =  parts_file[3].split(":");
                 String hours1 = sec1[0];
                 String minurtes1 = sec1[1];
@@ -88,7 +90,7 @@ public class plan_fact_frag extends Fragment {
 
 
                 Log.d(LOG_TAG, "секунды конец :  "+  fio_full.promejutok_need);
-                minutes = minutes + fio_full.promejutok_need;
+                minutes = minutes + kolvoMin;
 
 
 
