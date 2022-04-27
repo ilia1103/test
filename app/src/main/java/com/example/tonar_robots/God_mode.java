@@ -3,24 +3,15 @@ package com.example.tonar_robots;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 
-import com.andrognito.pinlockview.IndicatorDots;
-import com.andrognito.pinlockview.PinLockListener;
-import com.andrognito.pinlockview.PinLockView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -29,14 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Objects;
 
 public class God_mode extends AppCompatActivity {
 
@@ -54,14 +40,14 @@ public class God_mode extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_god_mode);
 
 
-        fio_full.changed_massiv = new ArrayList<String>();
+        fio_full.changed_massiv = new ArrayList<>();
 
         try{
             //saveUrl(Environment.getExternalStorageDirectory() + "/DCIM/"+brigada+".txt", "http://10.0.1.253/plan_proizvodstva/"+brigada+".txt");
@@ -93,14 +79,14 @@ public class God_mode extends AppCompatActivity {
 
 
     public void saveUrl(final String filename, final String urlString)
-            throws MalformedURLException, IOException {
+            throws IOException {
 
 
         FileOutputStream fout = null;
         try (BufferedInputStream in = new BufferedInputStream(new URL(urlString).openStream())) {
             fout = new FileOutputStream(filename);
 
-            final byte data[] = new byte[1024];
+            final byte[] data = new byte[1024];
             int count;
             while ((count = in.read(data, 0, 1024)) != -1) {
                 fout.write(data, 0, count);
@@ -108,8 +94,6 @@ public class God_mode extends AppCompatActivity {
 
 
             }
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder stringBuilder = new StringBuilder();
 
 
         }
@@ -138,37 +122,73 @@ public class God_mode extends AppCompatActivity {
                         //считывать все количества по каждому вхождению, если вхождений больше 1, сравнивать с новым количеством, если равно - не добавлять, ниже дописать второе условие по этому, просчитать все количества, забить в переменную, сравнить при добавлении
                         int sch = 0;
                         int manyOtm = 0;
+                        int manyTime = 0;
                         boolean vipFull = false;
                         while (sch<fio_full.sdelano.size()){
-                            String newStrParts [] = fio_full.sdelano.get(sch).split(";");
+                            String[] newStrParts = fio_full.sdelano.get(sch).split(";");
+
+
                             int kolvoSdelano = Integer.parseInt(newStrParts[5]);
-                            String newStr = newStrParts[0]+";"+newStrParts[1]+";"+newStrParts[2]+";"+newStrParts[3]+";"+newStrParts[4];
 
+                            int timeSdelano = Integer.parseInt(newStrParts[2]);
+                            Log.d(LOG_TAG, "где поломка 1 :  "+fio_full.sdelano);
 
-                            String lineParts [] = line.split(";");
+                            //String newStr = newStrParts[0]+";"+newStrParts[1]+";"+newStrParts[2]+";"+newStrParts[3]+";"+newStrParts[4];
+                            String newStr = newStrParts[0]+";"+newStrParts[1]+";"+newStrParts[3]+";"+newStrParts[4];
+
+                            String[] lineParts = line.split(";");
+
+                            //что то непонятно по этой переменной
                             mainStr = lineParts[0]+";"+lineParts[1]+";"+lineParts[2]+";"+lineParts[3]+";"+lineParts[4]+";"+lineParts[5];
+
+
                             int kolvoFile = Integer.parseInt(lineParts[5]);
-                             newStrLine = lineParts[0]+";"+lineParts[1]+";"+lineParts[2]+";"+lineParts[3]+";"+lineParts[4];
+
+                            int timeFile = Integer.parseInt(lineParts[2]);
+
+                            newStrLine = lineParts[0]+";"+lineParts[1]+";"+lineParts[3]+";"+lineParts[4];
                             if (newStrLine.equals(newStr)&&kolvoFile>kolvoSdelano){
 
-                                int ostatok = 0;
+                                int ostatok;
+                                int ostatokTime;
+
                                 if (manyOtm>0){
 
-                                    String many [] = newStrLine.split(";");
-                                    String mainStrKolvo = many[0]+";"+many[1]+";"+many[2]+";"+many[3]+";"+many[4];
-                                    ostatok = kolvoFile - kolvoSdelano - manyOtm;
-                                    newStrLine = mainStrKolvo+";"+String.valueOf(ostatok);
 
-                                    Log.d(LOG_TAG, "пишет или не пишет то :  "+newStrLine+";"+String.valueOf(ostatok));
+
+                                    String[] many = newStrLine.split(";");
+
+
+
+                                    ostatokTime = timeFile - timeSdelano - manyTime;
+
+
+                                    String mainStrKolvo = many[0]+";"+many[1]+";"+ ostatokTime +";"+many[2]+";"+many[3];
+                                    Log.d(LOG_TAG, "где поломка внутри manyOtm :  "+timeSdelano);
+
+                                    ostatok = kolvoFile - kolvoSdelano - manyOtm;
+                                    newStrLine = mainStrKolvo+";"+ ostatok;
+
+
+                                    Log.d(LOG_TAG, "пишет или не пишет то :  "+newStrLine+";"+ ostatok);
                                 }
                                 else {
 
+                                    ostatokTime = timeFile - timeSdelano;
+
                                     ostatok = kolvoFile - kolvoSdelano;
-                                    newStrLine = newStrLine+";"+String.valueOf(ostatok);
+                                    String[] many2 = newStrLine.split(";");
+
+
+                                    Log.d(LOG_TAG, "где поломка 2 :  " + timeSdelano);
+                                    newStrLine = many2[0]+";"+many2[1]+";"+ ostatokTime +";"+many2[2]+";"+many2[3]+";"+ ostatok;
+
 
                                 }
 
                                 manyOtm = manyOtm + kolvoSdelano;
+                                manyTime = manyTime + timeSdelano;
+                                Log.d(LOG_TAG, "где поломка 2 :  "+timeSdelano);
 
                             }
                             else{
@@ -177,16 +197,15 @@ public class God_mode extends AppCompatActivity {
 
                             sch = sch + 1;
                         }
-                        manyOtm = 0;
                         if (newStrLine.equals("")){
                             newStrLine = line;
                         }
                         int schVip = 0;
                         while (schVip<fio_full.sdelano.size()){
-                            String parts [] = fio_full.sdelano.get(schVip).split(";");
+                            String[] parts = fio_full.sdelano.get(schVip).split(";");
 
                             String myStr = parts[0]+";"+parts[1]+";"+parts[2]+";"+parts[3]+";"+parts[4]+";"+parts[5];
-                           // Log.d(LOG_TAG, "такие строю из сделано :  "+myStr);
+                            // Log.d(LOG_TAG, "такие строю из сделано :  "+myStr);
 
                             Log.d(LOG_TAG, "строка главнаяСтрока :  " + mainStr);
                             Log.d(LOG_TAG, "строка изСделано :  " + myStr);
@@ -203,7 +222,7 @@ public class God_mode extends AppCompatActivity {
                             Log.d(LOG_TAG, "уже был в сделано :  ");
                         }
                         else{
-                            String partsZero [] = newStrLine.split(";");
+                            String[] partsZero = newStrLine.split(";");
 
                             if (Integer.parseInt(partsZero[5])<1){
                                 Log.d(LOG_TAG, "по отметкам уже выполнен(несколько) :  ");
@@ -218,7 +237,6 @@ public class God_mode extends AppCompatActivity {
                         // считываем остальные строки в цикле
                         newStrLine = "";
                         mainStr = "";
-                        vipFull = false;
                         line = reader.readLine();
 
                     }
@@ -229,7 +247,7 @@ public class God_mode extends AppCompatActivity {
 
 
                 }
-                if (fio_full.changed_massiv.size()<2){
+                if (fio_full.changed_massiv.size()<1){
                     Intent intentNull = new Intent(God_mode.this, FileNotFound.class);
 
                     startActivity(intentNull);

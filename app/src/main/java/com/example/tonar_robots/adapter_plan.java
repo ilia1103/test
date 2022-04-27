@@ -355,9 +355,15 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
                                                     Log.d(LOG_TAG, "прошел в неравенство количества :  "+fio_full.kolvoVip+"  - "+finalParts_file[5]);
                                                     if (fio_full.kolvoVip!=Integer.parseInt(finalParts_file[5])&&fio_full.kolvoVip!=0){
-                                                        int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip ;
-                                                        String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
-                                                        String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
+                                                        int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip;
+                                                        int timeOld = Integer.parseInt(finalParts_file[2]);
+                                                        //остаток от выполнения
+                                                        timeOld = timeOld - timeOld*fio_full.kolvoVip/Integer.parseInt(finalParts_file[5]);
+                                                        // время выполнения
+                                                        int timeVip = Integer.parseInt(finalParts_file[2])*fio_full.kolvoVip/Integer.parseInt(finalParts_file[5]);
+
+                                                        String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ timeVip+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
+                                                        String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+timeOld+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
 
                                                         fio_full.sdelano.add(newStr+";"+fio_full.Tabel);
                                                         fio_full.changed_massiv.set(cifra,newStrMassiv) ;
