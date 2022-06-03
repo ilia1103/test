@@ -1,5 +1,6 @@
 package com.example.tonar_robots;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,9 +12,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.BufferedInputStream;
@@ -32,14 +38,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import android.graphics.Color;
 
 public class Plan extends AppCompatActivity {
 
     String LOG_TAG = Plan.class.getSimpleName();
+
 
 
 
@@ -56,6 +70,7 @@ public class Plan extends AppCompatActivity {
 
 
         fio_full.thread_run = true;
+
 
 
 
@@ -87,6 +102,7 @@ public class Plan extends AppCompatActivity {
 
 
 
+
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -102,6 +118,8 @@ public class Plan extends AppCompatActivity {
 
 
     }
+
+
 
 
 

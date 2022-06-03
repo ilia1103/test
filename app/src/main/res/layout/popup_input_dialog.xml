@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mask="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="460dp"
+        android:paddingTop="20dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:text="Артикул" />
+
+            <EditText
+                android:id="@+id/articul"
+                android:hint="Введите артикул"
+                android:inputType="text" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:text="Количество" />
+
+            <EditText
+                android:id="@+id/kolvoVne"
+                android:hint="Введите количество"
+                android:inputType="phone"
+                mask:allowed_chars="1234567890" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:text="Время начала" />
+
+            <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/timeStart"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                mask:allowed_chars="1234567890"
+
+                mask:mask="##:##" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:text="Время окончания" />
+
+            <br.com.sapereaude.maskedEditText.MaskedEditText
+                android:id="@+id/timeEnd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                mask:allowed_chars="1234567890"
+                mask:mask="##:##" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/raschetVip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center"
+                android:gravity="center_horizontal"
+                android:text="Посчитать время" />
+
+            <EditText
+                android:id="@+id/timeVip"
+                android:focusable="false"
+                android:hint="Нажмите кнопку"
+                android:inputType="none"
+                mask:allowed_chars="1234567890" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="end"
+                android:text="Пароль бригады" />
+
+            <EditText
+                android:id="@+id/passBrigada"
+                android:hint="Пароль бригады"
+                android:inputType="numberPassword" />
+        </TableRow>
+
+        <TableRow android:gravity="center_horizontal">
+
+
+            <Button
+                android:id="@+id/button_save_user_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="#3C803F"
+                android:gravity="center_horizontal"
+                android:text="Отправить"
+                android:textAllCaps="false"
+                android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow android:gravity="center_horizontal">
+
+
+            <Button
+                android:id="@+id/button_cancel_user_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="#982E2E"
+                android:gravity="center_horizontal"
+                android:text="Отмена"
+                android:textAllCaps="false"
+                android:textSize="20dp" />
+        </TableRow>
+    </TableLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

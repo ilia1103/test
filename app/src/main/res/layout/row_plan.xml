@@ -120,8 +120,8 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="137dp"
-                    android:layout_height="111dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="55dp"
                     android:layout_marginRight="20dp"

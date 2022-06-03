@@ -7,32 +7,38 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tonar_Robots"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".PopupActivity"
+            android:exported="false" />
+        <activity
             android:name=".FileNotFound"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Tonar_Robots.NoActionBar" />
-        <activity android:name=".Load_Content"
             android:screenOrientation="portrait"
-            />
-        <activity android:name=".God_mode"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PinCode_main"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Created"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/Theme.Tonar_Robots.NoActionBar" />
+        <activity
+            android:name=".Load_Content"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".God_mode"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PinCode_main"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Created"
+            android:screenOrientation="portrait" />
         <activity android:name=".Plan" />
         <activity
             android:name=".Login"

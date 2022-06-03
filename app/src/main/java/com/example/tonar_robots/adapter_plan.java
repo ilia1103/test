@@ -52,7 +52,14 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
     private boolean isImageScaled = false;
@@ -275,159 +282,224 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                             fio_full.Tabel = input.getText().toString();
                             dialog.cancel();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                            final EditText input = new EditText(context);
+                            input.setHint("Пароль бригады");
+                            input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_CLASS_TEXT);
+                            builder.setView(input);
+
                             builder.setTitle("Вы подтверждаете выполнение?")
                                     .setMessage("Информация будет принята во всех учетных системах")
                                     .setPositiveButton("Подтверждаю",
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
 
-                                                    int cifra = position;
-                                                    String[] parts_file1 = fio_full.changed_massiv.get(position).split(";");
-                                                    String stroka = (String) holder.fio.getText();
-                                                    stroka = stroka.replace("\n","_");
+                                                    String passBr = input.getText().toString();
 
-                                                    if (fio_full.poisk){
-                                                        int sch = 0;
-                                                        while (sch<fio_full.changed_massiv.size()){
-                                                            //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
+                                                    int sch2 = 0;
+                                                    while (sch2 < fio_full.passesBrigada.size()) {
+                                                        if (passBr.equals(fio_full.passesBrigada.get(sch2))) {
+                                                            fio_full.passesBrigadaFind = true;
 
-                                                            if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))){
-                                                                cifra = sch;
-                                                                Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИВЕ :  "+  cifra);
+
+                                                        }
+                                                        sch2 = sch2 + 1;
+
+
+                                                    }
+                                                    if (fio_full.passesBrigadaFind){
+                                                        fio_full.passesBrigadaFind = false;
+                                                            int cifra = position;
+                                                            String[] parts_file1 = fio_full.changed_massiv.get(position).split(";");
+                                                            String stroka = (String) holder.fio.getText();
+                                                            stroka = stroka.replace("\n", "_");
+
+                                                            if (fio_full.poisk) {
+                                                                int sch = 0;
+                                                                while (sch < fio_full.changed_massiv.size()) {
+                                                                    //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
+
+                                                                    if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))) {
+                                                                        cifra = sch;
+                                                                        Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИВЕ :  " + cifra);
+                                                                    }
+                                                                    sch = sch + 1;
+                                                                }
+
                                                             }
-                                                            sch = sch + 1;
+
+
+                                                        String[] sec1 = parts_file1[3].split(":");
+                                                        String hours1 = sec1[0];
+                                                        String minurtes1 = sec1[1];
+
+                                                        if (hours1.substring(0, 1) == "0") {
+                                                            hours1 = hours1.substring(1, 2);
+
+                                                        }
+                                                        if (minurtes1.substring(0, 1) == "0") {
+                                                            minurtes1 = minurtes1.substring(1, 2);
+
+                                                        }
+                                                        need_seconds_nach.set((Integer.parseInt(hours1) * 60 * 60 + Integer.parseInt(minurtes1) * 60) * 1000);
+                                                        Log.d(LOG_TAG, "секунды нач :  " + need_seconds_nach);
+
+                                                        int need_seconds_end = 0;
+                                                        String[] sec2 = finalParts_file[4].split(":");
+                                                        String hours2 = sec2[0];
+                                                        String minurtes2 = sec2[1];
+
+                                                        if (hours2.charAt(0) == '0') {
+                                                            hours2 = hours2.substring(1, 2);
+
+                                                        }
+                                                        if (minurtes2.charAt(0) == '0') {
+                                                            minurtes2 = minurtes2.substring(1, 2);
+
+                                                        }
+                                                        need_seconds_end = (Integer.parseInt(hours2) * 60 * 60 + Integer.parseInt(minurtes2) * 60) * 1000;
+                                                        Log.d(LOG_TAG, "секунды конец :  " + need_seconds_end);
+
+                                                        fio_full.promejutok_need = need_seconds_end - need_seconds_nach.get();
+
+
+                                                        fio_full.thread_run = false;
+                                                        Log.d(LOG_TAG, "размер:  " + fio_full.changed_massiv.size());
+                                                        Log.d(LOG_TAG, "позиция:  " + position);
+
+                                                        Intent intent = new Intent(context, MainActivity.class);
+                                                        String my_str = "";
+                                                        if (cifra < fio_full.changed_massiv.size() - 1) {
+                                                            my_str = fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel + "\n" + fio_full.changed_massiv.get(cifra + 1);
+                                                        } else {
+                                                            my_str = fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel + "\n" + "Конец плана";
+
                                                         }
 
-                                                    }
 
-
-                                                    String[] sec1 =  parts_file1[3].split(":");
-                                                    String hours1 = sec1[0];
-                                                    String minurtes1 = sec1[1];
-
-                                                    if (hours1.substring(0,1)=="0"){
-                                                        hours1 = hours1.substring(1,2);
-
-                                                    }
-                                                    if (minurtes1.substring(0,1)=="0"){
-                                                        minurtes1 = minurtes1.substring(1,2);
-
-                                                    }
-                                                    need_seconds_nach.set((Integer.parseInt(hours1) * 60 * 60 + Integer.parseInt(minurtes1) * 60) * 1000);
-                                                    Log.d(LOG_TAG, "секунды нач :  "+  need_seconds_nach);
-
-                                                    int need_seconds_end = 0;
-                                                    String[] sec2 =  finalParts_file[4].split(":");
-                                                    String hours2 = sec2[0];
-                                                    String minurtes2 = sec2[1];
-
-                                                    if (hours2.charAt(0) == '0'){
-                                                        hours2 = hours2.substring(1,2);
-
-                                                    }
-                                                    if (minurtes2.charAt(0) == '0'){
-                                                        minurtes2 = minurtes2.substring(1,2);
-
-                                                    }
-                                                    need_seconds_end = (Integer.parseInt(hours2)*60*60+Integer.parseInt(minurtes2)*60)*1000;
-                                                    Log.d(LOG_TAG, "секунды конец :  "+  need_seconds_end);
-
-                                                    fio_full.promejutok_need = need_seconds_end - need_seconds_nach.get();
-
-
-
-                                                    fio_full.thread_run = false;
-                                                    Log.d(LOG_TAG, "размер:  "+ fio_full.changed_massiv.size());
-                                                    Log.d(LOG_TAG, "позиция:  "+ position);
-
-                                                    Intent intent = new Intent(context, MainActivity.class);
-                                                    String my_str ="";
-                                                    if (cifra<fio_full.changed_massiv.size()-1){
-                                                        my_str = fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel + "\n" + fio_full.changed_massiv.get(cifra + 1);
-                                                    }
-                                                    else{
-                                                        my_str = fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel + "\n" + "Конец плана";
-
-                                                    }
-
-
-                                                    //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
-
-                                                    Log.d(LOG_TAG, "прошел в неравенство количества :  "+fio_full.kolvoVip+"  - "+finalParts_file[5]);
-                                                    if (fio_full.kolvoVip!=Integer.parseInt(finalParts_file[5])&&fio_full.kolvoVip!=0){
-                                                        int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip;
-                                                        int timeOld = Integer.parseInt(finalParts_file[2]);
-                                                        //остаток от выполнения
-                                                        timeOld = timeOld - timeOld*fio_full.kolvoVip/Integer.parseInt(finalParts_file[5]);
-                                                        // время выполнения
-                                                        int timeVip = Integer.parseInt(finalParts_file[2])*fio_full.kolvoVip/Integer.parseInt(finalParts_file[5]);
-
-                                                        String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ timeVip+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
-                                                        String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+timeOld+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
-
-                                                        fio_full.sdelano.add(newStr+";"+fio_full.Tabel);
-                                                        fio_full.changed_massiv.set(cifra,newStrMassiv) ;
-                                                        fio_full.kolvoVip = 0;
-
-
-                                                    }
-                                                    else{
-                                                        fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
                                                         //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
 
-                                                        fio_full.changed_massiv.remove(cifra);
-                                                    }
+                                                        Log.d(LOG_TAG, "прошел в неравенство количества :  " + fio_full.kolvoVip + "  - " + finalParts_file[5]);
+                                                        if (fio_full.kolvoVip != Integer.parseInt(finalParts_file[5]) && fio_full.kolvoVip != 0) {
+                                                            int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip;
+                                                            int timeOld = Integer.parseInt(finalParts_file[2]);
+                                                            //остаток от выполнения
+                                                            timeOld = timeOld - timeOld * fio_full.kolvoVip / Integer.parseInt(finalParts_file[5]);
+                                                            // время выполнения
+                                                            int timeVip = Integer.parseInt(finalParts_file[2]) * fio_full.kolvoVip / Integer.parseInt(finalParts_file[5]);
+
+                                                            String newStr = finalParts_file[0] + ";" + finalParts_file[1] + ";" + timeVip + ";" + finalParts_file[3] + ";" + finalParts_file[4] + ";" + String.valueOf(fio_full.kolvoVip);
+                                                            String newStrMassiv = finalParts_file[0] + ";" + finalParts_file[1] + ";" + timeOld + ";" + finalParts_file[3] + ";" + finalParts_file[4] + ";" + String.valueOf(kolvoVipoln);
+
+                                                            fio_full.sdelano.add(newStr + ";" + fio_full.Tabel);
+                                                            fio_full.changed_massiv.set(cifra, newStrMassiv);
+                                                            fio_full.kolvoVip = 0;
 
 
+                                                        } else {
+                                                            fio_full.sdelano.add(fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel);
+                                                            //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
+
+                                                            fio_full.changed_massiv.remove(cifra);
+                                                        }
 
 
-                                                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                                                    StorageReference storageReference = storage.getReference();
-                                                    StorageReference ref = storageReference.child("now_work/now_"+fio_full.brigada_name+".txt");
-                                                    StorageReference ref_all = storageReference.child("all_now/all_"+fio_full.brigada_name+".txt");
-                                                    byte[] b = my_str.getBytes(StandardCharsets.UTF_8);
-                                                    ref.putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                            Log.d(LOG_TAG, "записал :  ");
-                                                            //Toast.makeText(main_screen.this, "Заявка отправлена, обработка в конце дня", Toast.LENGTH_SHORT).show();
+                                                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                                                        StorageReference storageReference = storage.getReference();
+                                                        StorageReference ref = storageReference.child("now_work/now_" + fio_full.brigada_name + ".txt");
+                                                        StorageReference ref_all = storageReference.child("all_now/all_" + fio_full.brigada_name + ".txt");
+                                                        byte[] b = my_str.getBytes(StandardCharsets.UTF_8);
+                                                        ref.putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                Log.d(LOG_TAG, "записал :  ");
+                                                                //Toast.makeText(main_screen.this, "Заявка отправлена, обработка в конце дня", Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        });
+                                                        int sch_for_all_work = 0;
+                                                        String all_work = "";
+                                                        while (sch_for_all_work < fio_full.sdelano.size()) {
+
+                                                            all_work = all_work + fio_full.sdelano.get(sch_for_all_work) + ";" + fio_full.Tabel + "\n";
+                                                            sch_for_all_work = sch_for_all_work + 1;
 
                                                         }
-                                                    });
-                                                    int sch_for_all_work = 0;
-                                                    String all_work = "";
-                                                    while (sch_for_all_work<fio_full.sdelano.size()) {
-
-                                                        all_work = all_work + fio_full.sdelano.get(sch_for_all_work)+";"+fio_full.Tabel + "\n";
-                                                        sch_for_all_work = sch_for_all_work + 1;
-
-                                                    }
 
 
-                                                    byte[] all = all_work.getBytes(StandardCharsets.UTF_8);
-                                                    ref_all.putBytes(all).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                        @Override
-                                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                            Log.d(LOG_TAG, "записал :  ");
-                                                            //Toast.makeText(main_screen.this, "Заявка отправлена, обработка в конце дня", Toast.LENGTH_SHORT).show();
+                                                        byte[] all = all_work.getBytes(StandardCharsets.UTF_8);
+                                                        ref_all.putBytes(all).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                Log.d(LOG_TAG, "записал :  ");
+                                                                //Toast.makeText(main_screen.this, "Заявка отправлена, обработка в конце дня", Toast.LENGTH_SHORT).show();
 
+                                                            }
+                                                        });
+                                                        Date currentDate = new Date();  // Текущая дата
+                                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy|HH:mm:ss"); // Задаем формат даты
+                                                        String formattedDate = sdf.format(currentDate); // и форматируем
+
+
+                                                        String need_otm = fio_full.sdelano.get(fio_full.sdelano.size() - 1) + ";" + fio_full.brigada + ";" + formattedDate + ";" + passBr;
+                                                        String myURL = "http://10.10.12.165/otmetki/";
+                                                        String params = need_otm;
+                                                        byte[] data = null;
+                                                        InputStream is = null;
+
+                                                        try {
+                                                            URL url = new URL(myURL);
+                                                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                                            conn.setRequestMethod("POST");
+                                                            conn.setDoOutput(true);
+                                                            conn.setDoInput(true);
+
+
+                                                            OutputStream os = conn.getOutputStream();
+                                                            data = params.getBytes(StandardCharsets.ISO_8859_1);
+                                                            os.write(data);
+
+
+                                                            conn.connect();
+                                                            int responseCode = conn.getResponseCode();
+                                                            Log.d(LOG_TAG, "ответ сервера" + responseCode);
+                                                            Log.d(LOG_TAG, "записываю строку" + params);
+
+                                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                            is = conn.getInputStream();
+
+                                                            byte[] buffer = new byte[8192]; // Такого вот размера буфер
+                                                            // Далее, например, вот так читаем ответ
+                                                            int bytesRead;
+                                                            while ((bytesRead = is.read(buffer)) != -1) {
+                                                                baos.write(buffer, 0, bytesRead);
+                                                            }
+                                                            data = baos.toByteArray();
+                                                        } catch (Exception e) {
+                                                            Log.d(LOG_TAG, "упал в ошибку" + params);
+                                                        } finally {
+                                                            try {
+                                                                if (is != null)
+                                                                    is.close();
+                                                            } catch (Exception ex) {
+                                                            }
                                                         }
-                                                    });
 
 
-
-
-
-
-
-
-
-
-                                                    context.startActivity(intent);
+                                                        context.startActivity(intent);
 
 
                                                 }
-                                            })
+                                                    else{
+                                                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                                                .setTitleText("Oops...")
+                                                                .setContentText("Не найден пароль бригады")
+                                                                .show();
+
+                                                    }
+
+                                                        }
+                                                        })
                                     .setNegativeButton("Отмена",
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
@@ -457,24 +529,43 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
             else{
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final EditText input = new EditText(context);
+                input.setHint("Пароль бригады");
+                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
                 builder.setTitle("Вы подтверждаете выполнение?")
                         .setMessage("Информация будет принята во всех учетных системах")
                         .setPositiveButton("Подтверждаю",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
+                                        String passBr = input.getText().toString();
+                                        int sch2 = 0;
+                                        while (sch2 < fio_full.passesBrigada.size()) {
+                                            if (passBr.equals(fio_full.passesBrigada.get(sch2))) {
+                                                fio_full.passesBrigadaFind = true;
+
+
+                                            }
+                                            sch2 = sch2 + 1;
+
+
+                                        }
+
+                                    if (fio_full.passesBrigadaFind){
+                                        fio_full.passesBrigadaFind = false;
                                         int cifra = position;
                                         String[] parts_file1 = fio_full.changed_massiv.get(position).split(";");
                                         String stroka = (String) holder.fio.getText();
-                                        stroka = stroka.replace("\n","_");
+                                        stroka = stroka.replace("\n", "_");
 
-                                        if (fio_full.poisk){
+                                        if (fio_full.poisk) {
                                             int sch = 0;
-                                            while (sch<fio_full.changed_massiv.size()){
+                                            while (sch < fio_full.changed_massiv.size()) {
                                                 //здесь ищем настоящий индекс в массиве, когда это поиск. Нужно теперь будет сравнивать без количества, отрезать последнюю часть
-                                                if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))){
+                                                if (fio_full.changed_massiv.get(sch).equals(fio_full.poisk_massiv.get(position))) {
                                                     cifra = sch;
-                                                    Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИЕ :  "+  cifra);
+                                                    Log.d(LOG_TAG, "НАШЕЛ СООТВЕСТВТВИЕ :  " + cifra);
                                                 }
                                                 sch = sch + 1;
                                             }
@@ -482,80 +573,76 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                         }
 
 
-                                        String[] sec1 =  parts_file1[3].split(":");
+                                        String[] sec1 = parts_file1[3].split(":");
                                         String hours1 = sec1[0];
                                         String minurtes1 = sec1[1];
 
-                                        if (hours1.substring(0,1)=="0"){
-                                            hours1 = hours1.substring(1,2);
+                                        if (hours1.substring(0, 1) == "0") {
+                                            hours1 = hours1.substring(1, 2);
 
                                         }
-                                        if (minurtes1.substring(0,1)=="0"){
-                                            minurtes1 = minurtes1.substring(1,2);
+                                        if (minurtes1.substring(0, 1) == "0") {
+                                            minurtes1 = minurtes1.substring(1, 2);
 
                                         }
                                         need_seconds_nach.set((Integer.parseInt(hours1) * 60 * 60 + Integer.parseInt(minurtes1) * 60) * 1000);
-                                        Log.d(LOG_TAG, "секунды нач :  "+  need_seconds_nach);
+                                        Log.d(LOG_TAG, "секунды нач :  " + need_seconds_nach);
 
                                         int need_seconds_end = 0;
-                                        String[] sec2 =  finalParts_file[4].split(":");
+                                        String[] sec2 = finalParts_file[4].split(":");
                                         String hours2 = sec2[0];
                                         String minurtes2 = sec2[1];
 
-                                        if (hours2.substring(0, 1).equals("0")){
-                                            hours2 = hours2.substring(1,2);
+                                        if (hours2.substring(0, 1).equals("0")) {
+                                            hours2 = hours2.substring(1, 2);
 
                                         }
-                                        if (minurtes2.substring(0, 1).equals("0")){
-                                            minurtes2 = minurtes2.substring(1,2);
+                                        if (minurtes2.substring(0, 1).equals("0")) {
+                                            minurtes2 = minurtes2.substring(1, 2);
 
                                         }
-                                        need_seconds_end = (Integer.parseInt(hours2)*60*60+Integer.parseInt(minurtes2)*60)*1000;
-                                        Log.d(LOG_TAG, "секунды конец :  "+  need_seconds_end);
+                                        need_seconds_end = (Integer.parseInt(hours2) * 60 * 60 + Integer.parseInt(minurtes2) * 60) * 1000;
+                                        Log.d(LOG_TAG, "секунды конец :  " + need_seconds_end);
 
                                         fio_full.promejutok_need = need_seconds_end - need_seconds_nach.get();
 
 
-
                                         fio_full.thread_run = false;
-                                        Log.d(LOG_TAG, "размер:  "+ fio_full.changed_massiv.size());
-                                        Log.d(LOG_TAG, "позиция:  "+ position);
+                                        Log.d(LOG_TAG, "размер:  " + fio_full.changed_massiv.size());
+                                        Log.d(LOG_TAG, "позиция:  " + position);
 
                                         Intent intent = new Intent(context, MainActivity.class);
-                                        String my_str ="";
-                                        if (cifra<fio_full.changed_massiv.size()-1){
-                                            my_str = fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel + "\n" + fio_full.changed_massiv.get(cifra + 1);
-                                        }
-                                        else{
-                                            my_str = fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel + "\n" + "Конец плана";
+                                        String my_str = "";
+                                        if (cifra < fio_full.changed_massiv.size() - 1) {
+                                            my_str = fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel + "\n" + fio_full.changed_massiv.get(cifra + 1);
+                                        } else {
+                                            my_str = fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel + "\n" + "Конец плана";
 
                                         }
 
-                                        Log.d(LOG_TAG, "прошел в неравенство количества :  "+fio_full.kolvoVip+"  - "+finalParts_file[5]);
-                                        if (fio_full.kolvoVip!=Integer.parseInt(finalParts_file[5])&&fio_full.kolvoVip!=0){
-                                            int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip ;
-                                            String newStr = finalParts_file[0]+";"+ finalParts_file[1]+";"+ finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(fio_full.kolvoVip);
-                                            String newStrMassiv = finalParts_file[0]+";"+ finalParts_file[1]+";"+finalParts_file[2]+";"+finalParts_file[3]+";"+finalParts_file[4]+";"+String.valueOf(kolvoVipoln);
+                                        Log.d(LOG_TAG, "прошел в неравенство количества :  " + fio_full.kolvoVip + "  - " + finalParts_file[5]);
+                                        if (fio_full.kolvoVip != Integer.parseInt(finalParts_file[5]) && fio_full.kolvoVip != 0) {
+                                            int kolvoVipoln = Integer.parseInt(finalParts_file[5]) - fio_full.kolvoVip;
+                                            String newStr = finalParts_file[0] + ";" + finalParts_file[1] + ";" + finalParts_file[2] + ";" + finalParts_file[3] + ";" + finalParts_file[4] + ";" + String.valueOf(fio_full.kolvoVip);
+                                            String newStrMassiv = finalParts_file[0] + ";" + finalParts_file[1] + ";" + finalParts_file[2] + ";" + finalParts_file[3] + ";" + finalParts_file[4] + ";" + String.valueOf(kolvoVipoln);
 
-                                            fio_full.sdelano.add(newStr+";"+fio_full.Tabel);
-                                            fio_full.changed_massiv.set(cifra,newStrMassiv) ;
+                                            fio_full.sdelano.add(newStr + ";" + fio_full.Tabel);
+                                            fio_full.changed_massiv.set(cifra, newStrMassiv);
                                             fio_full.kolvoVip = 0;
 
 
-                                        }
-                                        else{
-                                            fio_full.sdelano.add(fio_full.changed_massiv.get(cifra)+";"+fio_full.Tabel);
+                                        } else {
+                                            fio_full.sdelano.add(fio_full.changed_massiv.get(cifra) + ";" + fio_full.Tabel);
                                             //здесь пишем про количество, добавляем, если меньше указанного в changed разницу
 
                                             fio_full.changed_massiv.remove(cifra);
                                         }
 
 
-
                                         FirebaseStorage storage = FirebaseStorage.getInstance();
                                         StorageReference storageReference = storage.getReference();
-                                        StorageReference ref = storageReference.child("now_work/now_"+fio_full.brigada_name+".txt");
-                                        StorageReference ref_all = storageReference.child("all_now/all_"+fio_full.brigada_name+".txt");
+                                        StorageReference ref = storageReference.child("now_work/now_" + fio_full.brigada_name + ".txt");
+                                        StorageReference ref_all = storageReference.child("all_now/all_" + fio_full.brigada_name + ".txt");
                                         byte[] b = my_str.getBytes(StandardCharsets.UTF_8);
                                         ref.putBytes(b).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                             @Override
@@ -567,9 +654,9 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                         });
                                         int sch_for_all_work = 0;
                                         String all_work = "";
-                                        while (sch_for_all_work<fio_full.sdelano.size()) {
+                                        while (sch_for_all_work < fio_full.sdelano.size()) {
 
-                                            all_work = all_work + fio_full.sdelano.get(sch_for_all_work)+";"+fio_full.Tabel + "\n";
+                                            all_work = all_work + fio_full.sdelano.get(sch_for_all_work) + ";" + fio_full.Tabel + "\n";
                                             sch_for_all_work = sch_for_all_work + 1;
 
                                         }
@@ -584,9 +671,14 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
 
                                             }
                                         });
+                                        Date currentDate = new Date();  // Текущая дата
+                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy|HH:mm:ss"); // Задаем формат даты
+                                        String formattedDate = sdf.format(currentDate); // и форматируем
 
-                                        String myURL = "http://1csrv05/Phone/ru/hs/tfj/Call";
-                                        String params = "Authorization:Basic X9Ch0L7RhNGC0KE6MDEyMw==";
+
+                                        String need_otm = fio_full.sdelano.get(fio_full.sdelano.size() - 1) + ";" + fio_full.brigada + ";" + formattedDate + ";" + passBr;
+                                        String myURL = "http://10.10.12.165/otmetki/";
+                                        String params = need_otm;
                                         byte[] data = null;
                                         InputStream is = null;
 
@@ -597,14 +689,16 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                             conn.setDoOutput(true);
                                             conn.setDoInput(true);
 
-                                            conn.setRequestProperty("Content-Length", "" + Integer.toString(params.getBytes().length));
+
                                             OutputStream os = conn.getOutputStream();
-                                            data = params.getBytes("UTF-8");
+                                            data = params.getBytes(StandardCharsets.ISO_8859_1);
                                             os.write(data);
 
 
                                             conn.connect();
-                                            int responseCode= conn.getResponseCode();
+                                            int responseCode = conn.getResponseCode();
+                                            Log.d(LOG_TAG, "ответ сервера" + responseCode);
+                                            Log.d(LOG_TAG, "записываю строку" + params);
 
                                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                             is = conn.getInputStream();
@@ -617,21 +711,26 @@ public class adapter_plan extends RecyclerView.Adapter<adapter_plan.MyViewSub> {
                                             }
                                             data = baos.toByteArray();
                                         } catch (Exception e) {
+                                            Log.d(LOG_TAG, "упал в ошибку" + params);
                                         } finally {
                                             try {
                                                 if (is != null)
                                                     is.close();
-                                            } catch (Exception ex) {}
+                                            } catch (Exception ex) {
+                                            }
                                         }
-
-
-
-
 
 
                                         context.startActivity(intent);
 
+                                      }
+                                    else{
+                                        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                                                .setTitleText("Oops...")
+                                                .setContentText("Не найден пароль бригады")
+                                                .show();
 
+                                            }
                                     }
                                 })
                         .setNegativeButton("Отмена",

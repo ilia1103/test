@@ -84,8 +84,24 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 });
+        ///ЭТИ 2 СТРОЧКИ ВАЖНЫ
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
+        try{
+            //saveUrl(Environment.getExternalStorageDirectory() + "/DCIM/"+brigada+".txt", "http://10.0.1.253/plan_proizvodstva/"+brigada+".txt");
+            saveUrl(getExternalFilesDir(Environment.DIRECTORY_DCIM) +"/"+"passesbrigada.txt", "http://10.0.1.253/plan_proizvodstva/passesbrigada.txt");
+            Log.d(LOG_TAG, "Pin ссылка паролей бригад: " + "http://10.0.1.253/plan_proizvodstva/"+"passesbrigada.txt");
 
 
+
+
+        }
+        catch(Exception e){
+            Log.d(LOG_TAG, "Ошибка сохранения паролей бригад" );
+
+        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
@@ -163,9 +179,67 @@ public class Login extends AppCompatActivity {
             return true;
         }
     }
+    public void saveUrl(final String filename, final String urlString)
+            throws MalformedURLException, IOException {
+
+
+        FileOutputStream fout = null;
+        try (BufferedInputStream in = new BufferedInputStream(new URL(urlString).openStream())) {
+            fout = new FileOutputStream(filename);
+
+            final byte data[] = new byte[1024];
+            int count;
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
+                Log.d(LOG_TAG, "строка :  " + count);
+
+
+            }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder stringBuilder = new StringBuilder();
+
+
+        }
+        finally {
+
+            if (fout != null) {
+                fout.close();
+
+
+                try {
+
+                    //File file = new File(Environment.getExternalStorageDirectory() + "/DCIM/"+fio_full.brigada+".txt");
+                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_DCIM) +"/passesbrigada.txt");
+                    //создаем объект FileReader для объекта File
+                    FileReader fr = new FileReader(file);
+                    //создаем BufferedReader с существующего FileReader для построчного считывания
+                    BufferedReader reader = new BufferedReader(fr);
+                    // считаем сначала первую строку
+                    String line = reader.readLine();
+                    while (line != null) {
+                        fio_full.passesBrigada.add(line);
+                        // считываем остальные строки в цикле
+                        Log.d(LOG_TAG, "строка из паролей бригад:  " + line);
+                        line = reader.readLine();
+
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+
+
+
+
+                }
+
+
+            }
+        }
+
+    }
 
 }
 class fio_full {
+    public static ArrayList<String> passesBrigada = new ArrayList<String>();
 
     public static ArrayList<String> str_file = new ArrayList<String>();
     public static ArrayList<String> changed_massiv = new ArrayList<String>();
@@ -173,6 +247,8 @@ class fio_full {
 
     public static ArrayList<String> poisk_massiv = new ArrayList<String>();
     public static ArrayList<String> massiv_passwords = new ArrayList<String>();
+
+    public static Boolean passesBrigadaFind = false;
 
 
     public static ArrayList<String> sdelano = new ArrayList<String>();
